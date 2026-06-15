@@ -1,65 +1,127 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
- <meta http-equiv="refresh" content="2"></meta>
-<style>
-	#tabla{border-collapse:collapse;
-		}
-	#q1,#q2,#q3,#q4{	/*Varios id con mismas características*/
-		width:100px;
-		height:100px;
-		border:1px solid black;
-		text-align:center;
-		}
-	#q1{background-color:	/*Cuadrante 1*/
-		{% if ejeX > 0 and ejeY > 0 %}
-			lightblue;
-		{% else %}
-			gray;
-		{% endif %}
-		}
-	#q2{background-color:	/*Cuadrante 2*/
-		{% if ejeX > 0 and ejeY < 0 %}
-			lightblue;
-		{% else %}
-			gray;
-		{% endif %}
-		}
-	#q3{background-color:	/*Cuadrante 3*/
-		{% if ejeX < 0 and ejeY > 0 %}
-			lightblue;
-		{% else %}
-			gray;
-		{% endif %}
-		}
-	#q4{background-color:	/*Cuadrante 4*/
-		{% if ejeX < 0 and ejeY < 0 %}
-			lightblue;
-		{% else %}
-			gray;
-		{% endif %}
-		}
-</style>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="2">
+    
+    <style>
+        #tabla-matriz {
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
 
+        /* Definimos el tamaño base para las 25 celdas de la matriz 5x5 */
+        #c-neg2-neg2, #c-neg2-neg1, #c-neg2-0, #c-neg2-1, #c-neg2-2,
+        #c-neg1-neg2, #c-neg1-neg1, #c-neg1-0, #c-neg1-1, #c-neg1-2,
+        #c-0-neg2,    #c-0-neg1,    #c-0-0,    #c-0-1,    #c-0-2,
+        #c-1-neg2,    #c-1-neg1,    #c-1-0,    #c-1-1,    #c-1-2,
+        #c-2-neg2,    #c-2-neg1,    #c-2-0,    #c-2-1,    #c-2-2 {
+            width: 75px;
+            height: 75px;
+            border: 2px solid #2d3748;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            color: #4a5568;
+            font-size: 13px;
+        }
+
+        /* LÓGICA DE DETECCIÓN DE FILAS Y COLUMNAS DESDE -2 HASTA +2 */
+        /* La intensidad del color aumenta proporcionalmente usando el valor absoluto |abs multiplicándolo por 1.8 */
+        
+        /* FILA Y = -2 (Arriba) */
+        #c-neg2-neg2 { background-color: {% if ejeY|int == -2 and ejeX|int == -2 %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-neg2-neg1 { background-color: {% if ejeY|int == -2 and ejeX|int == -1 %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-neg2-0    { background-color: {% if ejeY|int == -2 and ejeX|int == 0  %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-neg2-1    { background-color: {% if ejeY|int == -2 and ejeX|int == 1  %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-neg2-2    { background-color: {% if ejeY|int == -2 and ejeX|int == 2  %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+
+        /* FILA Y = -1 (Arriba-Centro) */
+        #c-neg1-neg2 { background-color: {% if ejeY|int == -1 and ejeX|int == -2 %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-neg1-neg1 { background-color: {% if ejeY|int == -1 and ejeX|int == -1 %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-neg1-0    { background-color: {% if ejeY|int == -1 and ejeX|int == 0  %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-neg1-1    { background-color: {% if ejeY|int == -1 and ejeX|int == 1  %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-neg1-2    { background-color: {% if ejeY|int == -1 and ejeX|int == 2  %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+
+        /* FILA Y = 0 (Eje central horizontal) */
+        #c-0-neg2    { background-color: {% if ejeY|int == 0 and ejeX|int == -2 %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-0-neg1    { background-color: {% if ejeY|int == 0 and ejeX|int == -1 %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-0-0       { background-color: {% if ejeY|int == 0 and ejeX|int == 0  %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #cbd5e0 {% endif %}; } /* Color base distinto para marcar el centro de equilibrio */
+        #c-0-1       { background-color: {% if ejeY|int == 0 and ejeX|int == 1  %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-0-2       { background-color: {% if ejeY|int == 0 and ejeX|int == 2  %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+
+        /* FILA Y = 1 (Abajo-Centro) */
+        #c-1-neg2    { background-color: {% if ejeY|int == 1 and ejeX|int == -2 %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-1-neg1    { background-color: {% if ejeY|int == 1 and ejeX|int == -1 %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-1-0       { background-color: {% if ejeY|int == 1 and ejeX|int == 0  %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-1-1       { background-color: {% if ejeY|int == 1 and ejeX|int == 1  %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-1-2       { background-color: {% if ejeY|int == 1 and ejeX|int == 2  %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+
+        /* FILA Y = 2 (Abajo) */
+        #c-2-neg2    { background-color: {% if ejeY|int == 2 and ejeX|int == -2 %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-2-neg1    { background-color: {% if ejeY|int == 2 and ejeX|int == -1 %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-2-0       { background-color: {% if ejeY|int == 2 and ejeX|int == 0  %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-2-1       { background-color: {% if ejeY|int == 2 and ejeX|int == 1  %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+        #c-2-2       { background-color: {% if ejeY|int == 2 and ejeX|int == 2  %} rgba(255, 69, 0, {{ 0.3 + (ejeX|abs * 1.8) }}) {% else %} #e2e8f0 {% endif %}; }
+
+        /* Estilos obligatorios usando únicamente IDs para los bloques de texto informativos */
+        #titulo-actividad { font-family: Arial, sans-serif; text-align: center; color: #1a365d; margin-top: 30px; }
+        #nombre-alumno { font-family: Arial, sans-serif; text-align: center; color: #4a5568; font-style: italic; }
+        #breve-explicacion { font-family: Arial, sans-serif; text-align: center; max-width: 650px; margin: 0 auto 20px auto; color: #555; line-height: 1.5; }
+        #telemetria { font-family: Arial, sans-serif; text-align: center; font-weight: bold; color: #2b6cb0; font-size: 18px; }
+    </style>
 </head>
+
 <body>
 
-<h1>Posición XY</h1>
+    <h1 id="Evaluación Sumativa 4.2">Desarrollo de Software para Hardware - Evaluación 4.2</h1>
+    <h2 id="Javier_Aravena">Alumno: [Tu Nombre y Apellido]</h2>
+    
+    <p id="breve-explicacion">
+        Visualización de datos en formato cartesiano utilizando una matriz de 5x5, donde el centro de equilibrio corresponde a la coordenada (0,0). 
+        A medida que el giroscopio se inclina lateralmente en el eje X (tanto a rangos positivos como negativos), la celda activa aumentará la intensidad de su color naranja.
+    </p>
 
-<p>X = {{ ejeX }}</p>
-<p>Y = {{ ejeY }}</p>
+    <p id="telemetria">Variables en la Nube -> X = {{ ejeX }} | Y = {{ ejeY }}</p>
 
-<table id="tabla">
-<tr id="cuadros">
-    <td id="q1">Q1</td>
-    <td id="q2">Q2</td>
-</tr>
-<tr>
-    <td id="q3">Q3</td>
-    <td id="q4">Q4</td>
-</tr>
-</table>
+    <table id="tabla-matriz">
+        <tr>
+            <td id="c-neg2-neg2">-2, -2</td>
+            <td id="c-neg2-neg1">-1, -2</td>
+            <td id="c-neg2-0">0, -2</td>
+            <td id="c-neg2-1">1, -2</td>
+            <td id="c-neg2-2">2, -2</td>
+        </tr>
+        <tr>
+            <td id="c-neg1-neg2">-2, -1</td>
+            <td id="c-neg1-neg1">-1, -1</td>
+            <td id="c-neg1-0">0, -1</td>
+            <td id="c-neg1-1">1, -1</td>
+            <td id="c-neg1-2">2, -1</td>
+        </tr>
+        <tr>
+            <td id="c-0-neg2">-2, 0</td>
+            <td id="c-0-neg1">-1, 0</td>
+            <td id="c-0-0">0, 0</td>
+            <td id="c-0-1">1, 0</td>
+            <td id="c-0-2">2, 0</td>
+        </tr>
+        <tr>
+            <td id="c-1-neg2">-2, 1</td>
+            <td id="c-1-neg1">-1, 1</td>
+            <td id="c-1-0">0, 1</td>
+            <td id="c-1-1">1, 1</td>
+            <td id="c-1-2">2, 1</td>
+        </tr>
+        <tr>
+            <td id="c-2-neg2">-2, 2</td>
+            <td id="c-2-neg1">-1, 2</td>
+            <td id="c-2-0">0, 2</td>
+            <td id="c-2-1">1, 2</td>
+            <td id="c-2-2">2, 2</td>
+        </tr>
+    </table>
 
 </body>
 </html>
